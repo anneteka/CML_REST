@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class FileDocument {
+public class File {
     @Id
     private String id;
 
