@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.List;
 
 
-@Document(indexName = "cml_files")
+@Document(indexName = "cml_files", createIndex = false)
 @Getter
 @Setter
 @ToString
@@ -20,6 +20,7 @@ public class FileDocument {
     private String id;
 
     private String file_name;
+
     private int file_size;
 
     @Field(type = FieldType.Nested, includeInParent = true)
