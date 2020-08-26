@@ -21,23 +21,28 @@ public class FileService {
     }
 
 
-    public String save(File file){
+    public String save(File file) {
 
         return fileRepository.save(file).getId();
     }
 
-    public void deleteFile(String id){
+    public boolean deleteFile(String id) {
+        if (fileRepository.existsById(id))
+            fileRepository.deleteById(id);
+        else
+            return false;
+        return true;
+    }
+
+    public void addTags() {
 
     }
 
-    public void addTags(){
-
-    }
-    public void deleteTags(){
-
+    public boolean deleteTags(String id) {
+        return true;
     }
 
-    public List<File> listFiles(){
+    public List<File> listFiles() {
 
         return null;
     }

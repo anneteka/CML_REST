@@ -56,8 +56,10 @@ public class FileController {
     //  "error": "file not found"
     //}
     @DeleteMapping("/file/{id}")
-    public void delete(@PathVariable String id) {
-
+    public ResponseEntity<Response> delete(@PathVariable String id) {
+        if (fileService.deleteFile(id))
+            return new ResponseEntity(new Response(true), HttpStatus.OK);
+        else return new ResponseEntity(new Response(false, "file not found"), HttpStatus.NOT_FOUND);
     }
 
     // Assign tags to file
