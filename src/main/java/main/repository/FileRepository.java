@@ -20,5 +20,5 @@ public interface FileRepository extends ElasticsearchRepository<File, String> {
 
     void deleteById(String s);
 
-
+    List<File> findAllByTagsContains(String tag);
 }
