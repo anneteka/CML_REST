@@ -22,7 +22,8 @@ public class FileService {
 
 
     public String save(File file){
-        return "id";
+
+        return fileRepository.save(file).getId();
     }
 
     public void deleteFile(String id){
