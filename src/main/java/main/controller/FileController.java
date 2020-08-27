@@ -42,6 +42,7 @@ public class FileController {
     //  "success": false,
     //  "error": "error description"
     //}
+    @CrossOrigin
     @PostMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> upload(@RequestBody File file) {
         ResponseEntity res;
@@ -71,6 +72,7 @@ public class FileController {
     //  "success": false,
     //  "error": "file not found"
     //}
+    @CrossOrigin
     @DeleteMapping("/file/{id}")
     public ResponseEntity<Response> delete(@PathVariable String id) {
         if (fileService.deleteFile(id))
@@ -83,6 +85,7 @@ public class FileController {
     //["tag1", "tag2", "tag3"]
     //returns status 200 and body
     //{"success": true}
+    @CrossOrigin
     @PostMapping("/file/{id}/tags")
     public ResponseEntity<Response> assignTags(@PathVariable String id, @RequestBody File tags) {
         if (fileService.addTags(id, tags.getTags()))
@@ -100,6 +103,7 @@ public class FileController {
     //  "success": false,
     //  "error": "tag not found on file"
     //}
+    @CrossOrigin
     @DeleteMapping("/file/{id}/tags")
     public ResponseEntity<Response> deleteTags(@PathVariable String id, @RequestBody File tags) throws JsonProcessingException {
         if (fileService.deleteTags(id, tags.getTags()))
@@ -142,7 +146,7 @@ public class FileController {
     //total - the total amount of files that satisfy the provided list of tags or total files count if no tags provided
     //page - the actual records to show on the current page.
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
-    ///file?tags=tag1,tag2,tag3&page=2&size=3
+    @CrossOrigin
     public ResponseEntity<String> listFiles(@RequestParam(required = false) List<String> tags,
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false,defaultValue = "10") int size,
