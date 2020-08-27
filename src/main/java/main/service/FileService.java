@@ -65,7 +65,7 @@ public class FileService {
             return false;
     }
 
-    //возвращает список всех файлов, либо же отфильтрованных по тегам и\или имени
+    //return filtered result
     public List<File> listFiles(List<String> tags, String q) {
         if (tags == null || tags.size() == 0) {
             if (q != null && !q.equals("")) {

@@ -5,13 +5,11 @@ import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.elasticsearch.common.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Arrays;
 import java.util.List;
 
 
