@@ -45,14 +45,22 @@ public class FileController {
     @PostMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> upload(@RequestBody File file) {
         ResponseEntity res;
-        if (file.getName() == null)
-            return new ResponseEntity("{\n \"success\":false,\n\"error\":\"name field can't be absent\"\n}",
+        JSONObject json = new JSONObject();
+        if (file.getName() == null) {
+            json.put("success", false);
+            json.put("error", "name field can't be absent");
+            return new ResponseEntity(json.toString(),
                     HttpStatus.BAD_REQUEST);
-        if (file.getSize() <= 0)
-            return new ResponseEntity("{\n \"success\":false,\n\"error\":\"size has incorrect value\"\n}",
+        }
+        if (file.getSize() <= 0) {
+            json.put("success", false);
+            json.put("error", "size has incorrect value");
+            return new ResponseEntity(json.toString(),
                     HttpStatus.BAD_REQUEST);
+        }
         String id = fileService.save(file);
-        return new ResponseEntity("{\n\"ID\":\"" + id + "\"\n}", HttpStatus.OK);
+        json.put("ID", id);
+        return new ResponseEntity(json.toString(), HttpStatus.OK);
     }
 
     //DELETE  /file/{ID}
@@ -141,10 +149,14 @@ public class FileController {
                                             @RequestParam(required = false)String q) throws JsonProcessingException {
         List<File> res = fileService.listFiles(tags, q);
         int total = res.size();
-        if (page * size > total)
-            return new ResponseEntity("{\"succes\":false,\"error\":\"this page does not exist\"}", HttpStatus.BAD_REQUEST);
-        res = res.subList(page * size, Math.min(page * size + size, total));
         JSONObject json = new JSONObject();
+        if (page * size > total) {
+            json.put("success", false);
+            json.put("error", "this page does not exist");
+            return new ResponseEntity(json.toString(), HttpStatus.BAD_REQUEST);
+        }
+        res = res.subList(page * size, Math.min(page * size + size, total));
+
         json.put("total", total);
         json.put("page", res);
         return new ResponseEntity(json.toString(), HttpStatus.OK);

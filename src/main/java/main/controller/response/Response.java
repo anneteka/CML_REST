@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+//вспомогательный класс для быстрого формирования тела ответа на запрос
 public class Response {
     private boolean success;
 

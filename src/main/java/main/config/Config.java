@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
 
 @Configuration
+//конфигурация для подключения к Elasticsearch Cloud
 public class Config extends AbstractElasticsearchConfiguration {
     @Override
     @Bean

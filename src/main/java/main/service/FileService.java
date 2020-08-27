@@ -44,7 +44,6 @@ public class FileService {
                 tags = addTags;
             } else
                 tags.addAll(addTags);
-//            file.get().setTags(tags);
             fileRepository.save(file.get());
             return true;
         } else
@@ -60,13 +59,13 @@ public class FileService {
                 return false;
 
             tags.removeAll(delTags);
-//            file.get().setTags(tags);
             fileRepository.save(file.get());
             return true;
         } else
             return false;
     }
 
+    //возвращает список всех файлов, либо же отфильтрованных по тегам и\или имени
     public List<File> listFiles(List<String> tags, String q) {
         if (tags == null || tags.size() == 0) {
             if (q != null && !q.equals("")) {
