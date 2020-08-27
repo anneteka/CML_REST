@@ -135,8 +135,11 @@ public class FileController {
     //page - the actual records to show on the current page.
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
     ///file?tags=tag1,tag2,tag3&page=2&size=3
-    public ResponseEntity<String> listFiles(@RequestParam(required = false) List<String> tags, @RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false,defaultValue = "10") int size) throws JsonProcessingException {
-        List<File> res = fileService.listFiles(tags);
+    public ResponseEntity<String> listFiles(@RequestParam(required = false) List<String> tags,
+                                            @RequestParam(required = false, defaultValue = "0") int page,
+                                            @RequestParam(required = false,defaultValue = "10") int size,
+                                            @RequestParam(required = false)String q) throws JsonProcessingException {
+        List<File> res = fileService.listFiles(tags, q);
         int total = res.size();
         if (page * size > total)
             return new ResponseEntity("{\"succes\":false,\"error\":\"this page does not exist\"}", HttpStatus.BAD_REQUEST);

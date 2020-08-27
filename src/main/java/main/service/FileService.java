@@ -6,8 +6,6 @@ import main.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,13 +67,23 @@ public class FileService {
             return false;
     }
 
-    public List<File> listFiles(List<String> tags) {
-        if (tags==null||tags.size()==0) return fileRepository.findAll();
-        List<File> temp = fileRepository.findAllByTagsContains(tags.get(0));
-        for (String tag: tags){
-          temp= FileUtil.intersect(temp, fileRepository.findAllByTagsContains(tag));
+    public List<File> listFiles(List<String> tags, String q) {
+        if (tags == null || tags.size() == 0) {
+            if (q != null && !q.equals("")) {
+                return fileRepository.findAllByNameContains(q);
+            }
+            return fileRepository.findAll();
+        }
+        List<File> temp;
+        if (q != null && !q.equals(""))
+            temp = fileRepository.findAllByNameContains(q);
+        else
+            temp = fileRepository.findAllByTagsContains(tags.get(0));
+        for (String tag : tags) {
+            temp = FileUtil.intersect(temp, fileRepository.findAllByTagsContains(tag));
         }
         return temp;
     }
+
 
 }
