@@ -48,13 +48,4 @@ public class File {
         return id.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "\"id\":\"" + id + '\"' +
-                ", \"name\":\"" + name + '\"' +
-                ", \"size\":" + size +
-                ", \"tags\":" + tags +
-                '}';
-    }
 }
