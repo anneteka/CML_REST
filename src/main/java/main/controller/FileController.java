@@ -44,9 +44,9 @@ public class FileController {
     public ResponseEntity<String> upload(@RequestBody File file) {
         ResponseEntity res;
         JSONObject json = new JSONObject();
-        if (file.getName() == null) {
+        if (file.getName() == null || file.getName().equals("")) {
             json.put("success", false);
-            json.put("error", "name field can't be absent");
+            json.put("error", "name field can't be absent or empty");
             return new ResponseEntity(json.toString(),
                     HttpStatus.BAD_REQUEST);
         }
