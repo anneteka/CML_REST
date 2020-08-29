@@ -1,28 +1,26 @@
 package main.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
-import main.controller.response.Response;
+import main.controller.response.ResponseID;
+import main.controller.response.ResponseList;
+import main.controller.response.ResponseSuccess;
 import main.repository.document.File;
 import main.service.FileService;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class FileController {
 
     private final FileService fileService;
+//    private Validator validator;
 
     //Upload
     //POST /file
@@ -41,24 +39,18 @@ public class FileController {
     //}
     @CrossOrigin
     @PostMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> upload(@RequestBody File file) {
+    public ResponseEntity<Object> upload(@RequestBody File file) {
         ResponseEntity res;
         JSONObject json = new JSONObject();
         if (file.getName() == null || file.getName().equals("")) {
-            json.put("success", false);
-            json.put("error", "name field can't be absent or empty");
-            return new ResponseEntity(json.toString(),
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseSuccess(false,"name field can't be absent or empty"),HttpStatus.BAD_REQUEST);
         }
         if (file.getSize() <= 0) {
-            json.put("success", false);
-            json.put("error", "size has incorrect value");
-            return new ResponseEntity(json.toString(),
+            return new ResponseEntity(new ResponseSuccess(false, "size has incorrect value"),
                     HttpStatus.BAD_REQUEST);
         }
         String id = fileService.save(file);
-        json.put("ID", id);
-        return new ResponseEntity(json.toString(), HttpStatus.OK);
+        return new ResponseEntity(new ResponseID(id), HttpStatus.OK);
     }
 
     //DELETE  /file/{ID}
@@ -71,10 +63,10 @@ public class FileController {
     //}
     @CrossOrigin
     @DeleteMapping("/file/{id}")
-    public ResponseEntity<Response> delete(@PathVariable String id) {
+    public ResponseEntity<ResponseSuccess> delete(@PathVariable String id) {
         if (fileService.deleteFile(id))
-            return new ResponseEntity(new Response(true), HttpStatus.OK);
-        else return new ResponseEntity(new Response(false, "file not found"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new ResponseSuccess(true), HttpStatus.OK);
+        else return new ResponseEntity(new ResponseSuccess(false, "file not found"), HttpStatus.NOT_FOUND);
     }
 
     // Assign tags to file
@@ -84,10 +76,10 @@ public class FileController {
     //{"success": true}
     @CrossOrigin
     @PostMapping("/file/{id}/tags")
-    public ResponseEntity<Response> assignTags(@PathVariable String id, @RequestBody File tags) {
+    public ResponseEntity<ResponseSuccess> assignTags(@PathVariable String id, @RequestBody File tags) {
         if (fileService.addTags(id, tags.getTags()))
-            return new ResponseEntity(new Response(true), HttpStatus.OK);
-        else return new ResponseEntity(new Response(false, "file not found"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new ResponseSuccess(true), HttpStatus.OK);
+        else return new ResponseEntity(new ResponseSuccess(false, "file not found"), HttpStatus.NOT_FOUND);
     }
 
     //Remove tags from file
@@ -102,10 +94,10 @@ public class FileController {
     //}
     @CrossOrigin
     @DeleteMapping("/file/{id}/tags")
-    public ResponseEntity<Response> deleteTags(@PathVariable String id, @RequestBody File tags) throws JsonProcessingException {
+    public ResponseEntity<Object> deleteTags(@PathVariable String id, @RequestBody File tags) throws JsonProcessingException {
         if (fileService.deleteTags(id, tags.getTags()))
-            return new ResponseEntity(new Response(true), HttpStatus.OK);
-        else return new ResponseEntity(new Response(false, "tag not founf on file"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseSuccess(true), HttpStatus.OK);
+        else return new ResponseEntity(new ResponseSuccess(false, "tag not founf on file"), HttpStatus.BAD_REQUEST);
     }
 
     //List files with pagination optionally filtered by tags
@@ -144,22 +136,18 @@ public class FileController {
     //page - the actual records to show on the current page.
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public ResponseEntity<String> listFiles(@RequestParam(required = false) List<String> tags,
+    public ResponseEntity<Object> listFiles(@RequestParam(required = false) List<String> tags,
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false,defaultValue = "10") int size,
                                             @RequestParam(required = false)String q) throws JsonProcessingException {
         List<File> res = fileService.listFiles(tags, q);
         int total = res.size();
-        JSONObject json = new JSONObject();
+
         if (page * size > total) {
-            json.put("success", false);
-            json.put("error", "this page does not exist");
-            return new ResponseEntity(json.toString(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseSuccess(false, "this page does not exist"), HttpStatus.BAD_REQUEST);
         }
         res = res.subList(page * size, Math.min(page * size + size, total));
 
-        json.put("total", total);
-        json.put("page", res);
-        return new ResponseEntity(json.toString(), HttpStatus.OK);
+        return new ResponseEntity(new ResponseList(total,res), HttpStatus.OK);
     }
 }

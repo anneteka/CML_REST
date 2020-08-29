@@ -9,14 +9,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 //DTO-like response class
-public class Response {
+public class ResponseSuccess {
     private boolean success;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String error;
 
 
-    public Response(boolean success) {
+    public ResponseSuccess(boolean success) {
         this.success = success;
     }
 }
