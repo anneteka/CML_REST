@@ -11,12 +11,16 @@ import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+//@Validated
 public class FileController {
 
     private final FileService fileService;
@@ -39,15 +43,9 @@ public class FileController {
     //}
     @CrossOrigin
     @PostMapping(value = "/file", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> upload(@RequestBody File file) {
-        ResponseEntity res;
-        JSONObject json = new JSONObject();
-        if (file.getName() == null || file.getName().equals("")) {
-            return new ResponseEntity(new ResponseSuccess(false,"name field can't be absent or empty"),HttpStatus.BAD_REQUEST);
-        }
-        if (file.getSize() <= 0) {
-            return new ResponseEntity(new ResponseSuccess(false, "size has incorrect value"),
-                    HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> upload(@Valid @RequestBody File file, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(new ResponseSuccess(false, bindingResult.getFieldErrors().get(0).getDefaultMessage()), HttpStatus.BAD_REQUEST);
         }
         String id = fileService.save(file);
         return new ResponseEntity(new ResponseID(id), HttpStatus.OK);
@@ -97,7 +95,7 @@ public class FileController {
     public ResponseEntity<Object> deleteTags(@PathVariable String id, @RequestBody File tags) throws JsonProcessingException {
         if (fileService.deleteTags(id, tags.getTags()))
             return new ResponseEntity(new ResponseSuccess(true), HttpStatus.OK);
-        else return new ResponseEntity(new ResponseSuccess(false, "tag not founf on file"), HttpStatus.BAD_REQUEST);
+        else return new ResponseEntity(new ResponseSuccess(false, "tag not found on file"), HttpStatus.BAD_REQUEST);
     }
 
     //List files with pagination optionally filtered by tags
