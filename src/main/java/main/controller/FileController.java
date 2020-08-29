@@ -138,7 +138,7 @@ public class FileController {
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false,defaultValue = "10") int size,
                                             @RequestParam(required = false)String q) throws JsonProcessingException {
-        List<File> res = fileService.listFiles(tags, q);
+        List<File> res = fileService.listFiles(tags, q, page, size);
         int total = res.size();
 
         if (page * size > total) {

@@ -3,8 +3,11 @@ package main.service;
 import lombok.RequiredArgsConstructor;
 import main.repository.FileRepository;
 import main.repository.document.File;
-import main.util.FileUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,22 +67,16 @@ public class FileService {
     }
 
     //return filtered result
-    public List<File> listFiles(List<String> tags, String q) {
-        if (tags == null || tags.size() == 0) {
-            if (q != null && !q.equals("")) {
-                return fileRepository.findAllByNameContains(q);
+    public List<File> listFiles(List<String> tags, String q, int page, int size) {
+        BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+        if (tags != null && tags.size() > 0)
+            for (String tag : tags) {
+                boolQuery.must(QueryBuilders.termsQuery("file_tags", tag));
             }
-            return fileRepository.findAll();
-        }
-        List<File> temp;
         if (q != null && !q.equals(""))
-            temp = fileRepository.findAllByNameContains(q);
-        else
-            temp = fileRepository.findAllByTagsContains(tags.get(0));
-        for (String tag : tags) {
-            temp = FileUtil.intersect(temp, fileRepository.findAllByTagsContains(tag));
-        }
-        return temp;
+            boolQuery.must(QueryBuilders.wildcardQuery("file_name", "*" + q + "*"));
+        NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(boolQuery).withPageable(PageRequest.of(page, size)).build();
+        return fileRepository.search(query).getContent();
     }
 
 

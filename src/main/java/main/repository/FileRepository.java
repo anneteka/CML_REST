@@ -20,10 +20,4 @@ public interface FileRepository extends ElasticsearchRepository<File, String> {
     void delete(File file);
 
     void deleteById(String s);
-
-    List<File> findAllByTagsContains(String tag);
-    List<File> findAllByNameContains(String name);
-
-    @Query("")
-    List<File> findAllByTagsFiltered(List[] tags, int page, int size);
 }
