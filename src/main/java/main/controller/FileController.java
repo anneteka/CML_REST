@@ -3,7 +3,6 @@ package main.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import main.controller.response.ResponseID;
-import main.controller.response.ResponseList;
 import main.controller.response.ResponseSuccess;
 import main.repository.document.File;
 import main.service.FileService;
@@ -136,10 +135,6 @@ public class FileController {
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false, defaultValue = "10") int size,
                                             @RequestParam(required = false) String q) throws JsonProcessingException {
-        List<File> res = fileService.listFiles(tags, q, page, size);
-        int total = res.size();
-        res = res.subList(page * size, Math.min(page * size + size, total));
-
-        return new ResponseEntity(new ResponseList(total, res), HttpStatus.OK);
+        return new ResponseEntity(fileService.listFiles(tags, q, page, size), HttpStatus.OK);
     }
 }
