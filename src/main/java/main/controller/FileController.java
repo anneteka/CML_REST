@@ -138,10 +138,6 @@ public class FileController {
                                             @RequestParam(required = false) String q) throws JsonProcessingException {
         List<File> res = fileService.listFiles(tags, q, page, size);
         int total = res.size();
-
-        if (page * size > total) {
-            return new ResponseEntity(new ResponseSuccess(false, "this page does not exist"), HttpStatus.BAD_REQUEST);
-        }
         res = res.subList(page * size, Math.min(page * size + size, total));
 
         return new ResponseEntity(new ResponseList(total, res), HttpStatus.OK);
