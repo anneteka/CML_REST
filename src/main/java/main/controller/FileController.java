@@ -7,12 +7,10 @@ import main.controller.response.ResponseList;
 import main.controller.response.ResponseSuccess;
 import main.repository.document.File;
 import main.service.FileService;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -136,8 +134,8 @@ public class FileController {
     @CrossOrigin
     public ResponseEntity<Object> listFiles(@RequestParam(required = false) List<String> tags,
                                             @RequestParam(required = false, defaultValue = "0") int page,
-                                            @RequestParam(required = false,defaultValue = "10") int size,
-                                            @RequestParam(required = false)String q) throws JsonProcessingException {
+                                            @RequestParam(required = false, defaultValue = "10") int size,
+                                            @RequestParam(required = false) String q) throws JsonProcessingException {
         List<File> res = fileService.listFiles(tags, q, page, size);
         int total = res.size();
 
@@ -146,6 +144,6 @@ public class FileController {
         }
         res = res.subList(page * size, Math.min(page * size + size, total));
 
-        return new ResponseEntity(new ResponseList(total,res), HttpStatus.OK);
+        return new ResponseEntity(new ResponseList(total, res), HttpStatus.OK);
     }
 }
