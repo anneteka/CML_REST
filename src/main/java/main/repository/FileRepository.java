@@ -1,6 +1,7 @@
 package main.repository;
 
 import main.repository.document.File;
+import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +23,7 @@ public interface FileRepository extends ElasticsearchRepository<File, String> {
 
     List<File> findAllByTagsContains(String tag);
     List<File> findAllByNameContains(String name);
+
+    @Query("")
+    List<File> findAllByTagsFiltered(List[] tags, int page, int size);
 }

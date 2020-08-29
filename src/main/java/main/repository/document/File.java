@@ -11,6 +11,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Document(indexName = "cml_files", createIndex = false)
@@ -29,7 +30,7 @@ public class File {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field(type = FieldType.Nested, includeInParent = true, name = "file_tags")
-    private List<String> tags;
+    private Set<String> tags;
 
     @Override
     public boolean equals(Object o) {

@@ -3,6 +3,7 @@ package main.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import lombok.RequiredArgsConstructor;
 import main.controller.response.Response;
 import main.repository.document.File;
 import main.service.FileService;
@@ -18,14 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 public class FileController {
 
-    private FileService fileService;
-
-    @Autowired
-    public FileController(FileService fileService) {
-        this.fileService = fileService;
-    }
+    private final FileService fileService;
 
     //Upload
     //POST /file

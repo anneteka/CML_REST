@@ -1,5 +1,6 @@
 package main.service;
 
+import lombok.RequiredArgsConstructor;
 import main.repository.FileRepository;
 import main.repository.document.File;
 import main.util.FileUtil;
@@ -8,15 +9,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class FileService {
-    private FileRepository fileRepository;
-
-    @Autowired
-    public FileService(FileRepository fileRepository) {
-        this.fileRepository = fileRepository;
-    }
+    private final FileRepository fileRepository;
 
     public List<File> findAll() {
         return fileRepository.findAll();
@@ -36,10 +34,10 @@ public class FileService {
         return true;
     }
 
-    public boolean addTags(String id, List<String> addTags) {
+    public boolean addTags(String id, Set<String> addTags) {
         Optional<File> file = fileRepository.findById(id);
         if (file.isPresent()) {
-            List<String> tags = file.get().getTags();
+            Set<String> tags = file.get().getTags();
             if (tags == null) {
                 tags = addTags;
             } else
@@ -51,10 +49,10 @@ public class FileService {
 
     }
 
-    public boolean deleteTags(String id, List<String> delTags) {
+    public boolean deleteTags(String id, Set<String> delTags) {
         Optional<File> file = fileRepository.findById(id);
         if (file.isPresent()) {
-            List<String> tags = file.get().getTags();
+            Set<String> tags = file.get().getTags();
             if (tags == null || !file.get().getTags().containsAll(delTags))
                 return false;
 
