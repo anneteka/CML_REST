@@ -1,0 +1,6 @@
+spring:
+  elasticsearch:
+    rest:
+      password: password
+      username: admin
+      uris: https://8cd980be460e4478bb03437cd2780478.europe-west2.gcp.elastic-cloud.com:9243
