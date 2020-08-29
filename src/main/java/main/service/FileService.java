@@ -1,11 +1,13 @@
 package main.service;
 
 import lombok.RequiredArgsConstructor;
+import main.controller.response.ResponseList;
 import main.repository.FileRepository;
 import main.repository.document.File;
 import main.util.FileUtil;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -68,7 +70,7 @@ public class FileService {
     }
 
     //return filtered result
-    public List<File> listFiles(List<String> tags, String q, int page, int size) {
+    public ResponseList listFiles(List<String> tags, String q, int page, int size) {
         BoolQueryBuilder boolQuery = new BoolQueryBuilder();
         if (tags != null && tags.size() > 0)
             for (String tag : tags) {
@@ -77,7 +79,8 @@ public class FileService {
         if (q != null && !q.equals(""))
             boolQuery.must(QueryBuilders.wildcardQuery("file_name", "*" + q + "*"));
         NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(boolQuery).withPageable(PageRequest.of(page, size)).build();
-        return fileRepository.search(query).getContent();
+        Page<File> search = fileRepository.search(query);
+        return new ResponseList(search.getTotalElements(),search.getContent());
     }
 
 

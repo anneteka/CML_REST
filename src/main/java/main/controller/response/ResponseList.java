@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class ResponseList {
-    private int total;
+    private long total;
     private List<File> page;
 }
