@@ -3,6 +3,7 @@ package main.service;
 import lombok.RequiredArgsConstructor;
 import main.repository.FileRepository;
 import main.repository.document.File;
+import main.util.FileUtil;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,7 @@ public class FileService {
 
 
     public String save(File file) {
-        //todo audio video text image
+        FileUtil.addExtensionTags(file);
         return fileRepository.save(file).getId();
     }
 
